@@ -8,6 +8,7 @@ import { call, put, takeLatest } from 'redux-saga/effects'
 import { kleros, eth, ARBITRATOR_ADDRESS } from '../bootstrap/dapp-api'
 import * as contractActions from '../actions/contract'
 import { ETH_NO_ACCOUNTS } from '../constants/errors'
+import { createMetaEvidence } from '../utils/contract'
 
 const toastrOptions = {
   timeOut: 3000,
@@ -21,6 +22,8 @@ const toastrOptions = {
 function* createContract({ type, payload: { contract } }) {
   const accounts = yield call(eth.accounts)
   if (!accounts[0]) throw new Error(ETH_NO_ACCOUNTS)
+
+  const metaEvidence = createMetaEvidence(accounts[0], contract.partyB)
 
   yield put(push('/'))
 
@@ -38,7 +41,8 @@ function* createContract({ type, payload: { contract } }) {
       process.env.REACT_APP_ARBITRATOR_EXTRADATA,
       contract.email,
       contract.title,
-      contract.description
+      contract.description,
+      metaEvidence
     )
   } catch (err) {
     console.log(err)
