@@ -23,7 +23,13 @@ function* createContract({ type, payload: { contract } }) {
   const accounts = yield call(eth.accounts)
   if (!accounts[0]) throw new Error(ETH_NO_ACCOUNTS)
 
-  const metaEvidence = createMetaEvidence(accounts[0], contract.partyB)
+  const metaEvidence = createMetaEvidence(
+    accounts[0],
+    contract.partyB,
+    contract.title,
+    contract.description,
+    contract.fileURI
+  )
 
   yield put(push('/'))
 
@@ -34,14 +40,11 @@ function* createContract({ type, payload: { contract } }) {
       kleros.arbitrable.deploy,
       accounts[0].toLowerCase(),
       unit.toWei(contract.payment, 'ether'),
-      Eth.keccak256(contract.description),
       ARBITRATOR_ADDRESS,
       process.env.REACT_APP_ARBITRATOR_TIMEOUT,
       contract.partyB.toLowerCase(),
       process.env.REACT_APP_ARBITRATOR_EXTRADATA,
       contract.email,
-      contract.title,
-      contract.description,
       metaEvidence
     )
   } catch (err) {

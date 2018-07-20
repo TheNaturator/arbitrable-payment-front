@@ -26,6 +26,7 @@ const initializeKleros = async () => {
       }_ARBITRATOR_ADDRESS`
     ]
 
+  const accounts = await eth.accounts()
   kleros = new Kleros(eth.currentProvider, STORE_PROVIDER, ARBITRATOR_ADDRESS)
 }
 
